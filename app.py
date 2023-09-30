@@ -104,6 +104,8 @@ for i in range(0, top_n):
         reset_app()
     
 if st.button("❌ None of the above and SKIP ❌"):
+    current_date = datetime.now().strftime('%Y-%m-%d')
+    current_time = datetime.now().strftime('%H:%M:%S')
     append_to_sheet(google_sheet, current_date, current_time, st.session_state["job_title"], st.session_state["job_desc"], "NIL", "NIL", possible_ssoc[0], possible_ssoc_conf[0][:5])
 
 
