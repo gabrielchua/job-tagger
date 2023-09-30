@@ -65,49 +65,46 @@ st.title("Help us tag jobs 🙏")
 with st.expander("Instructions"):
     st.write("This application will randomly select a job posting from MCF. Please select the most representative category.")
 
-col1, col2 = st.columns(2)
 
-with col1:
-    st.success(f"""**{st.session_state["job_title"]}:** 
+st.success(f"""**{st.session_state["job_title"]}:** 
 
 {st.session_state["job_desc"]}""")
 
-with col2:
-    st.divider()
-    st.markdown("""
-    <style>
-        .center-text {
-            text-align: center;
-        }
-    </style>
-    <div class="center-text"><b>Please select the most suitable category</b></div>
+st.divider()
+st.markdown("""
+<style>
+    .center-text {
+        text-align: center;
+    }
+</style>
+<div class="center-text"><b>Please select the most suitable category</b></div>
 """, unsafe_allow_html=True)
-    st.write("")
+st.write("")
 
-    ssoc_label_list = []
-    ssoc_desc_list = []
+ssoc_label_list = []
+ssoc_desc_list = []
 
-    for i in range(0, top_n):
-        predicted_ssoc = int(possible_ssoc[i])
-        predicted_confidence = float(possible_ssoc_conf[i])
+for i in range(0, top_n):
+    predicted_ssoc = int(possible_ssoc[i])
+    predicted_confidence = float(possible_ssoc_conf[i])
 
-        match_ssoc = list(st.session_state["ssoc_list"]["ssoc"] == predicted_ssoc)
+    match_ssoc = list(st.session_state["ssoc_list"]["ssoc"] == predicted_ssoc)
 
-        predicted_ssoc_label = st.session_state["ssoc_list"].loc[match_ssoc, "title"].tolist()
-        ssoc_label_list.append(predicted_ssoc_label)
+    predicted_ssoc_label = st.session_state["ssoc_list"].loc[match_ssoc, "title"].tolist()
+    ssoc_label_list.append(predicted_ssoc_label)
 
-        predicted_ssoc_desc = st.session_state["ssoc_list"].loc[match_ssoc, "description"].tolist()
-        ssoc_desc_list.append(predicted_ssoc_desc)
+    predicted_ssoc_desc = st.session_state["ssoc_list"].loc[match_ssoc, "description"].tolist()
+    ssoc_desc_list.append(predicted_ssoc_desc)
 
-        if st.button(predicted_ssoc_label[0]):
-            # Append the selected job to the Google Sheets
-            current_date = datetime.now().strftime('%Y-%m-%d')
-            current_time = datetime.now().strftime('%H:%M:%S')
-            append_to_sheet(google_sheet, current_date, current_time, st.session_state["job_title"], st.session_state["job_desc"], possible_ssoc[i], possible_ssoc_conf[0][:5], possible_ssoc[0], possible_ssoc_conf[0][:5])
-            reset_app()
-        
-    if st.button("❌ None of the above/SKIP ❌"):
-        append_to_sheet(google_sheet, current_date, current_time, st.session_state["job_title"], st.session_state["job_desc"], "NIL", "NIL", possible_ssoc[0], possible_ssoc_conf[0][:5])
+    if st.button(predicted_ssoc_label[0]):
+        # Append the selected job to the Google Sheets
+        current_date = datetime.now().strftime('%Y-%m-%d')
+        current_time = datetime.now().strftime('%H:%M:%S')
+        append_to_sheet(google_sheet, current_date, current_time, st.session_state["job_title"], st.session_state["job_desc"], possible_ssoc[i], possible_ssoc_conf[0][:5], possible_ssoc[0], possible_ssoc_conf[0][:5])
+        reset_app()
+    
+if st.button("❌ None of the above and SKIP ❌"):
+    append_to_sheet(google_sheet, current_date, current_time, st.session_state["job_title"], st.session_state["job_desc"], "NIL", "NIL", possible_ssoc[0], possible_ssoc_conf[0][:5])
 
 
 st.divider()
